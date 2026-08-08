@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle2, Loader2, X } from 'lucide-react';
 import { saveConsultation } from '../lib/firebase';
+import { sendFormEmail } from '../lib/formSubmit';
+import { createSubmissionId } from '../lib/submissionId';
 import type { ConsultationPayload, ConsultationType } from '../types';
 
 interface Props {
@@ -10,6 +12,7 @@ interface Props {
 }
 
 const initialForm = (type: ConsultationType): ConsultationPayload => ({
+  submissionId: createSubmissionId(),
   type,
   name: '', email: '', contact: '', direction: 'unsure', experience: '', idea: '', blocker: '', availability: '', payment: '', website: '',
 });
@@ -39,18 +42,20 @@ export function ConsultationModal({ open, defaultType, onClose }: Props) {
     setStatus('loading');
     setError('');
     try {
-      await Promise.allSettled([
-        saveConsultation(form),
-        fetch('/api/consultation', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(form),
-        }).then(async (response) => {
-          if (!response.ok) throw new Error((await response.json()).error ?? '이메일 전송 실패');
-        }),
-      ]).then((results) => {
-        if (results.every((result) => result.status === 'rejected')) throw new Error('신청 내용을 전송하지 못했습니다.');
+      await sendFormEmail(`[June Mentoring] ${form.name}님의 새 상담 신청`, {
+        '신청 유형': form.type === 'free' ? '15분 무료 전화상담' : '유료 프로젝트 진단',
+        '이름': form.name,
+        email: form.email,
+        '연락처': form.contact,
+        '희망 방향': form.direction === 'web' ? '웹서비스' : form.direction === 'ios' ? 'iPhone 앱' : '미정',
+        '개발 경험': form.experience,
+        '만들고 싶은 서비스': form.idea,
+        '현재 막힌 부분': form.blocker,
+        '상담 가능 시간': form.availability,
+        '결제 방식': form.payment || '미선택',
+        '접수 번호': form.submissionId,
       });
+      await saveConsultation(form);
       setStatus('success');
     } catch (e) {
       setStatus('error');

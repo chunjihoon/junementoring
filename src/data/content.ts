@@ -36,7 +36,7 @@ export const programs = [
     duration: '기본 8회 · 1회 60분',
     price: '360,000원부터',
     description: 'React와 Firebase를 활용해 핵심 기능이 작동하고 URL로 공유 가능한 웹서비스를 완성합니다.',
-    outcomes: ['화면 흐름·데이터 구조 설계', '입력·저장·조회 기능', '반응형 화면', 'Vercel 실제 배포'],
+    outcomes: ['화면 흐름·데이터 구조 설계', '입력·저장·조회 기능', '반응형 화면', 'Firebase 실제 배포'],
     note: '난이도와 현재 수준에 따라 10회 과정 권장 가능',
   },
   {

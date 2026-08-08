@@ -1,14 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Check, Code2, Loader2, MessageSquareQuote, ShieldCheck } from 'lucide-react';
 import { profile } from '../data/content';
 import { saveReview } from '../lib/firebase';
+import { sendFormEmail } from '../lib/formSubmit';
+import { createSubmissionId } from '../lib/submissionId';
 import type { ReviewPayload } from '../types';
-
-const createSubmissionId = () => (
-  typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
-    ? crypto.randomUUID()
-    : `${Date.now()}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`
-);
 
 const createInitialForm = (): ReviewPayload => ({
   submissionId: createSubmissionId(),
@@ -57,6 +53,7 @@ export function ReviewPage() {
   const [form, setForm] = useState<ReviewPayload>(createInitialForm);
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
   const [error, setError] = useState('');
+  const submittingRef = useRef(false);
 
   useEffect(() => {
     document.title = `수강 후기 작성 | ${profile.brand}`;
@@ -71,28 +68,33 @@ export function ReviewPage() {
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
-    if (form.website) return;
+    if (form.website || submittingRef.current) return;
 
+    submittingRef.current = true;
     setStatus('loading');
     setError('');
 
     try {
-      const response = await fetch('/api/review', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+      const courseLabels: Record<ReviewPayload['course'], string> = {
+        diagnosis: '프로젝트 진단',
+        web: '웹서비스 MVP',
+        ios: 'iPhone 앱 MVP',
+        other: '기타 과정',
+      };
+      await sendFormEmail(`[June Mentoring] ${form.displayName}님의 새 리뷰`, {
+        '작성자': form.displayName,
+        '수강 과정': courseLabels[form.course],
+        '1. 수업 전 어려웠던 점': form.before,
+        '2. 특히 도움이 됐던 부분': form.helpful,
+        '3. 수업 후 달라진 점': form.change,
+        '4. 추천하고 싶은 분': form.recommend,
+        '접수 번호': form.submissionId,
       });
-      const contentType = response.headers.get('content-type') ?? '';
-      if (!contentType.includes('application/json')) {
-        throw new Error('이메일 API에 연결할 수 없습니다. Vercel 배포 또는 vercel dev 환경에서 다시 시도해주세요.');
-      }
-      const result = await response.json() as { ok?: boolean; error?: string };
-      if (!response.ok || !result.ok) throw new Error(result.error ?? '리뷰 알림 메일을 보내지 못했습니다.');
-
       await saveReview(form);
       sessionStorage.setItem('review-submitted', 'true');
       window.location.assign('/#reviews');
     } catch (caught) {
+      submittingRef.current = false;
       setStatus('error');
       setError(caught instanceof Error ? caught.message : '리뷰를 등록하지 못했습니다. 잠시 후 다시 시도해주세요.');
     }
@@ -160,8 +162,13 @@ export function ReviewPage() {
           </label>
 
           {status === 'error' && <p className="form-error" role="alert">{error}</p>}
-          <button className="button primary wide review-submit" disabled={status === 'loading'}>
-            {status === 'loading' ? <><Loader2 className="spin" size={18} /> 등록 중</> : <>후기 제출하기 <ArrowRight size={18} /></>}
+          <button
+            type="submit"
+            className="button primary wide review-submit"
+            disabled={status === 'loading'}
+            aria-busy={status === 'loading'}
+          >
+            {status === 'loading' ? <><Loader2 className="spin" size={18} /> 전송 중...</> : <>후기 제출하기 <ArrowRight size={18} /></>}
           </button>
           <p className="form-privacy">제출과 동시에 후기가 공개되며, 등록 완료 후 메인 페이지로 이동합니다.</p>
         </form>

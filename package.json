@@ -15,7 +15,6 @@
     "lucide-react": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "resend": "latest",
     "vite": "latest"
   },
   "devDependencies": {

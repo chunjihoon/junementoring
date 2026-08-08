@@ -1,6 +1,6 @@
 # AI 웹·앱 제작 멘토링 랜딩페이지
 
-React + Vite + TypeScript로 만든 반응형 상세페이지입니다. 상담 신청은 선택적으로 Cloud Firestore에 저장되고, Vercel Function과 Resend를 통해 이메일로 전송됩니다.
+React + Vite + TypeScript로 만든 반응형 상세페이지입니다. 상담 신청과 후기는 Cloud Firestore에 저장되고, FormSubmit을 통해 이메일로 전송됩니다.
 
 ## 포함 기능
 
@@ -8,7 +8,7 @@ React + Vite + TypeScript로 만든 반응형 상세페이지입니다. 상담 �
 - 15분 무료상담 / 유료 프로젝트 진단 모달
 - 모바일·태블릿·PC 반응형 디자인
 - Firebase Firestore 상담 저장
-- Vercel Function + Resend 이메일 알림
+- FormSubmit 이메일 알림
 - 별도 수강 후기 작성 페이지 (`/review`)
 - 후기 즉시 공개 및 등록 알림 이메일
 - 입력값 검증, 봇 방지용 honeypot
@@ -23,39 +23,36 @@ cp .env.example .env.local
 npm run dev
 ```
 
-이메일 전송 API는 Vercel Functions 환경에서 동작합니다. 로컬 Vite 개발 서버만 실행할 경우 Firestore 저장은 가능하지만 `/api/consultation`은 별도 Vercel 로컬 환경이 필요합니다.
-
-```bash
-npm i -g vercel
-vercel dev
-```
+FormSubmit은 웹 서버 주소에서 실행해야 하므로 `npm run dev` 또는 배포된 Firebase Hosting 주소에서 제출 흐름을 확인합니다.
 
 ## Firebase 설정
 
 1. Firebase 프로젝트를 생성합니다.
 2. Web App을 등록하고 `.env.local`에 `VITE_FIREBASE_*` 값을 입력합니다.
 3. Cloud Firestore 데이터베이스를 생성합니다.
-4. 포함된 `firestore.rules`를 Firebase Console의 Rules에 적용합니다.
+4. 포함된 `firestore.rules`를 배포합니다: `firebase deploy --only firestore:rules`
 
-Firebase가 설정되지 않아도 페이지는 실행됩니다. 이 경우 상담 폼은 이메일 API만 사용합니다.
+Firebase Web 설정이 없으면 페이지는 표시되지만 상담 및 후기 제출은 완료되지 않습니다.
 
-## Resend 및 Vercel 설정
+## 이메일 알림 설정
 
-1. Resend에서 API Key를 생성합니다.
-2. 발신 도메인을 인증합니다.
-3. Vercel Project Settings > Environment Variables에 다음 값을 등록합니다.
-   - `RESEND_API_KEY`
-   - `CONSULTATION_TO_EMAIL`
-   - `CONSULTATION_FROM_EMAIL`
-   - `REVIEW_TO_EMAIL` (기본값: `guatemala3081@gmail.com`)
-   - `REVIEW_FROM_EMAIL`
-4. GitHub 저장소를 Vercel에 연결하거나 프로젝트 폴더에서 `vercel`을 실행합니다.
+별도의 API 키나 Cloud Functions가 필요하지 않습니다. 상담 또는 리뷰 폼을 처음 제출하면 `guatemala3081@gmail.com`으로 FormSubmit 활성화 메일이 발송됩니다. 메일의 활성화 링크를 한 번 클릭하면 이후 제출부터 알림 메일이 정상 수신됩니다. 활성화 전 제출도 최대 30일 동안 보관되며 활성화 후 전달됩니다.
+
+Hosting과 Firestore Rules를 배포합니다.
+
+```bash
+firebase deploy --only hosting,firestore:rules
+```
 
 ## 수강 후기
 
-수강생에게 `https://배포도메인/review` 링크를 전달하면 됩니다. 후기 제출 시 Resend 알림이 먼저 전송되고 Firestore의 `reviews` 컬렉션에 공개 상태로 저장됩니다. 저장이 완료되면 메인 페이지의 후기 섹션으로 이동합니다.
+수강생에게 `https://배포도메인/review` 링크를 전달하면 됩니다. 후기 제출 시 FormSubmit 알림이 먼저 전송되고 Firestore의 `reviews` 컬렉션에 공개 상태로 저장됩니다. 저장이 완료되면 메인 페이지의 후기 섹션으로 이동합니다.
 
-리뷰 기능을 사용하려면 Firebase Web 설정, 배포된 `firestore.rules`, `RESEND_API_KEY`와 인증된 발신 도메인의 `REVIEW_FROM_EMAIL`이 필요합니다. 일반 Vite 개발 서버에서는 `/api/review`가 실행되지 않으므로 전체 제출 흐름은 `vercel dev` 또는 Vercel Preview 배포에서 확인합니다.
+리뷰 기능을 사용하려면 Firebase Web 설정과 배포된 `firestore.rules`가 필요합니다.
+
+## GitHub 자동 배포
+
+기존 GitHub Actions는 Firebase Hosting을 자동 배포합니다. 저장소의 Settings > Secrets and variables > Actions에 여섯 개의 `VITE_FIREBASE_*` 값을 등록해야 GitHub 빌드에서도 Firestore 설정이 포함됩니다.
 
 ## 배포 전 반드시 교체할 내용
 

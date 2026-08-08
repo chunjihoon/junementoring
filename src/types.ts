@@ -1,6 +1,7 @@
 export type ConsultationType = 'free' | 'paid';
 
 export interface ConsultationPayload {
+  submissionId: string;
   type: ConsultationType;
   name: string;
   email: string;

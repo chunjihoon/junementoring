@@ -2,12 +2,40 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /consultations/{document} {
-      allow create: if request.resource.data.name is string
+      allow create: if request.resource.data.keys().hasOnly([
+                      'submissionId', 'type', 'name', 'email', 'contact',
+                      'direction', 'experience', 'idea', 'blocker',
+                      'availability', 'payment', 'createdAt', 'source'
+                    ])
+                    && request.resource.data.submissionId == document
+                    && request.resource.data.submissionId is string
+                    && request.resource.data.submissionId.size() >= 20
+                    && request.resource.data.submissionId.size() <= 80
+                    && request.resource.data.type in ['free', 'paid']
+                    && request.resource.data.name is string
                     && request.resource.data.email is string
+                    && request.resource.data.contact is string
+                    && request.resource.data.direction in ['web', 'ios', 'unsure']
+                    && request.resource.data.experience is string
                     && request.resource.data.idea is string
+                    && request.resource.data.blocker is string
+                    && request.resource.data.availability is string
+                    && request.resource.data.payment in ['', 'kmong', 'bank']
+                    && request.resource.data.name.size() > 0
                     && request.resource.data.name.size() <= 100
+                    && request.resource.data.email.size() > 0
                     && request.resource.data.email.size() <= 200
-                    && request.resource.data.idea.size() <= 5000;
+                    && request.resource.data.contact.size() > 0
+                    && request.resource.data.contact.size() <= 200
+                    && request.resource.data.experience.size() > 0
+                    && request.resource.data.experience.size() <= 3000
+                    && request.resource.data.idea.size() > 0
+                    && request.resource.data.idea.size() <= 5000
+                    && request.resource.data.blocker.size() <= 3000
+                    && request.resource.data.availability.size() > 0
+                    && request.resource.data.availability.size() <= 3000
+                    && request.resource.data.createdAt == request.time
+                    && request.resource.data.source == 'landing-page';
       allow read, update, delete: if false;
     }
 

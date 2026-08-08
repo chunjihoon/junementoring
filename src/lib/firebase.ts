@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { addDoc, collection, doc, getFirestore, onSnapshot, query, serverTimestamp, setDoc, where } from 'firebase/firestore';
+import { collection, doc, getFirestore, onSnapshot, query, serverTimestamp, setDoc, where } from 'firebase/firestore';
 import type { ConsultationPayload, PublishedReview, ReviewPayload } from '../types';
 
 const firebaseConfig = {
@@ -16,13 +16,15 @@ const app = isConfigured ? initializeApp(firebaseConfig) : null;
 const db = app ? getFirestore(app) : null;
 
 export async function saveConsultation(payload: ConsultationPayload) {
-  if (!db) return { skipped: true };
-  const ref = await addDoc(collection(db, 'consultations'), {
-    ...payload,
+  if (!db) throw new Error('상담 신청 저장을 위한 Firebase 설정이 필요합니다.');
+
+  const { website: _website, ...consultation } = payload;
+  await setDoc(doc(db, 'consultations', payload.submissionId), {
+    ...consultation,
     createdAt: serverTimestamp(),
     source: 'landing-page',
   });
-  return { skipped: false, id: ref.id };
+  return { id: payload.submissionId };
 }
 
 export async function saveReview(payload: ReviewPayload) {
