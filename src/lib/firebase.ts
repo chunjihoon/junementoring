@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { collection, doc, getFirestore, onSnapshot, query, serverTimestamp, setDoc, where } from 'firebase/firestore';
+import { collection, doc, getDocsFromServer, getFirestore, query, serverTimestamp, setDoc, where } from 'firebase/firestore';
 import type { ConsultationPayload, PublishedReview, ReviewPayload } from '../types';
 
 const firebaseConfig = {
@@ -41,39 +41,28 @@ export async function saveReview(payload: ReviewPayload) {
   return { id: payload.submissionId };
 }
 
-export function subscribePublishedReviews(
-  onReviews: (reviews: PublishedReview[]) => void,
-  onError?: (error: Error) => void,
-) {
-  if (!db) {
-    onReviews([]);
-    return () => undefined;
-  }
+export async function getPublishedReviews(): Promise<PublishedReview[]> {
+  if (!db) throw new Error('리뷰 조회를 위한 Firebase 설정이 필요합니다.');
 
   const reviewsQuery = query(collection(db, 'reviews'), where('published', '==', true));
-  return onSnapshot(
-    reviewsQuery,
-    (snapshot) => {
-      const reviews = snapshot.docs.map((reviewDoc) => {
-        const data = reviewDoc.data();
-        return {
-          id: reviewDoc.id,
-          submissionId: data.submissionId,
-          displayName: data.displayName,
-          course: data.course,
-          before: data.before,
-          helpful: data.helpful,
-          change: data.change,
-          recommend: data.recommend,
-          consentToPublish: data.consentToPublish,
-          published: true as const,
-          createdAt: data.createdAt?.toDate?.(),
-        } satisfies PublishedReview;
-      });
+  const snapshot = await getDocsFromServer(reviewsQuery);
+  const reviews = snapshot.docs.map((reviewDoc) => {
+    const data = reviewDoc.data();
+    return {
+      id: reviewDoc.id,
+      submissionId: data.submissionId,
+      displayName: data.displayName,
+      course: data.course,
+      before: data.before,
+      helpful: data.helpful,
+      change: data.change,
+      recommend: data.recommend,
+      consentToPublish: data.consentToPublish,
+      published: true as const,
+      createdAt: data.createdAt?.toDate?.(),
+    } satisfies PublishedReview;
+  });
 
-      reviews.sort((a, b) => (b.createdAt?.getTime() ?? 0) - (a.createdAt?.getTime() ?? 0));
-      onReviews(reviews);
-    },
-    (error) => onError?.(error),
-  );
+  reviews.sort((a, b) => (b.createdAt?.getTime() ?? 0) - (a.createdAt?.getTime() ?? 0));
+  return reviews;
 }

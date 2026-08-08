@@ -206,25 +206,39 @@
 
 .review-showcase { scroll-margin-top: 72px; }
 
-.review-success-banner {
-  max-width: 900px;
-  margin: -20px auto 28px;
-  padding: 16px 18px;
+.review-complete-main {
+  min-height: calc(100vh - 76px);
   display: flex;
   align-items: center;
-  gap: 12px;
-  border: 1px solid #b8e1c8;
-  border-radius: 14px;
-  background: #effaf3;
-  color: #246b3d;
-  font-size: 14px;
+  justify-content: center;
+  padding: 48px 20px;
 }
 
-.review-success-banner svg { flex: none; }
+.review-complete-card {
+  width: min(520px, 100%);
+  padding: 56px 36px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 22px 70px rgba(20, 38, 74, .1);
+  color: var(--primary);
+  text-align: center;
+}
 
-.review-success-banner strong {
-  display: block;
-  margin-bottom: 2px;
+.review-complete-card h1 {
+  margin: 20px 0 12px;
+  color: var(--ink);
+  font-size: clamp(28px, 4vw, 40px);
+}
+
+.review-complete-card p {
+  margin: 0 0 24px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.review-complete-card .spin {
+  margin: 0 auto;
 }
 
 .review-empty {

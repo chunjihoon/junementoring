@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, Check, Code2, Loader2, MessageSquareQuote, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, CheckCircle2, Code2, Loader2, MessageSquareQuote, ShieldCheck } from 'lucide-react';
 import { profile } from '../data/content';
 import { saveReview } from '../lib/firebase';
 import { sendFormEmail } from '../lib/formSubmit';
@@ -24,7 +24,7 @@ const questions = [
     number: '01',
     title: '수업을 시작하기 전, 어떤 부분이 어렵거나 막막했나요?',
     guide: '프로젝트를 시작하거나 진행하면서 혼자 해결하기 어려웠던 상황을 들려주세요.',
-    placeholder: '예: AI로 코드는 만들 수 있었지만 오류가 반복되고, 어떤 순서로 기능을 완성해야 할지 막막했습니다.',
+    placeholder: '예: 코드는 만들 수 있었지만 오류가 반복되고, 어떤 순서로 기능을 완성해야 할지 막막했습니다.',
   },
   {
     key: 'helpful' as const,
@@ -45,13 +45,13 @@ const questions = [
     number: '04',
     title: '어떤 분들에게 이 수업을 추천하고 싶나요?',
     guide: '비슷한 고민을 가진 분을 떠올리며 편하게 작성해주세요.',
-    placeholder: '예: AI로 프로젝트를 시작했지만 끝까지 완성하지 못해 막혀 있는 분께 추천하고 싶습니다.',
+    placeholder: '예: 프로젝트를 시작했지만 끝까지 완성하지 못해 막혀 있는 분께 추천하고 싶습니다.',
   },
 ];
 
 export function ReviewPage() {
   const [form, setForm] = useState<ReviewPayload>(createInitialForm);
-  const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [error, setError] = useState('');
   const submittingRef = useRef(false);
 
@@ -77,8 +77,8 @@ export function ReviewPage() {
     try {
       const courseLabels: Record<ReviewPayload['course'], string> = {
         diagnosis: '프로젝트 진단',
-        web: '웹서비스 MVP',
-        ios: 'iPhone 앱 MVP',
+        web: '웹서비스 과정',
+        ios: 'iPhone 앱 과정',
         other: '기타 과정',
       };
       await sendFormEmail(`[June Mentoring] ${form.displayName}님의 새 리뷰`, {
@@ -91,13 +91,31 @@ export function ReviewPage() {
         '접수 번호': form.submissionId,
       });
       await saveReview(form);
-      sessionStorage.setItem('review-submitted', 'true');
-      window.location.assign('/#reviews');
+      setStatus('success');
+      window.setTimeout(() => window.location.assign('/#reviews'), 1800);
     } catch (caught) {
       submittingRef.current = false;
       setStatus('error');
       setError(caught instanceof Error ? caught.message : '리뷰를 등록하지 못했습니다. 잠시 후 다시 시도해주세요.');
     }
+  }
+
+  if (status === 'success') {
+    return (
+      <div className="review-page">
+        <header className="review-header">
+          <a className="brand" href="/"><span className="brand-mark"><Code2 size={18} /></span>{profile.brand}</a>
+        </header>
+        <main className="review-complete-main">
+          <div className="review-complete-card" role="status">
+            <CheckCircle2 size={56} />
+            <h1>후기가 등록되었습니다.</h1>
+            <p>소중한 경험을 들려주셔서 감사합니다.<br />잠시 후 메인 화면의 후기 섹션으로 이동합니다.</p>
+            <Loader2 className="spin" size={20} />
+          </div>
+        </main>
+      </div>
+    );
   }
 
   return (
@@ -124,7 +142,7 @@ export function ReviewPage() {
 
           <div className="review-basic-fields">
             <label>
-              공개할 이름 또는 닉네임
+              이름
               <input required maxLength={80} value={form.displayName} onChange={(event) => update('displayName', event.target.value)} placeholder="예: 김OO, 주니, 익명" />
             </label>
             <label>
@@ -155,11 +173,6 @@ export function ReviewPage() {
               </label>
             ))}
           </div>
-
-          <label className="review-consent">
-            <input type="checkbox" required checked={form.consentToPublish} onChange={(event) => update('consentToPublish', event.target.checked)} />
-            <span><strong>후기 공개에 동의합니다.</strong> 작성한 이름·과정·후기 내용이 멘토링 사이트에 공개되는 것에 동의합니다.</span>
-          </label>
 
           {status === 'error' && <p className="form-error" role="alert">{error}</p>}
           <button

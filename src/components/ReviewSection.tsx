@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { CheckCircle2, MessageSquareQuote } from 'lucide-react';
-import { subscribePublishedReviews } from '../lib/firebase';
+import { MessageSquareQuote } from 'lucide-react';
+import { getPublishedReviews } from '../lib/firebase';
 import type { PublishedReview, ReviewCourse } from '../types';
 
 const courseLabels: Record<ReviewCourse, string> = {
   diagnosis: '프로젝트 진단',
-  web: '웹서비스 MVP',
-  ios: 'iPhone 앱 MVP',
+  web: '웹서비스 과정',
+  ios: 'iPhone 앱 과정',
   other: '프로젝트 멘토링',
 };
 
@@ -14,25 +14,21 @@ export function ReviewSection() {
   const [reviews, setReviews] = useState<PublishedReview[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-
   useEffect(() => {
-    const wasSubmitted = sessionStorage.getItem('review-submitted') === 'true';
-    if (wasSubmitted) {
-      setSubmitted(true);
-      sessionStorage.removeItem('review-submitted');
-    }
-
-    return subscribePublishedReviews(
-      (nextReviews) => {
+    let active = true;
+    getPublishedReviews()
+      .then((nextReviews) => {
+        if (!active) return;
         setReviews(nextReviews);
         setLoading(false);
-      },
-      () => {
+      })
+      .catch(() => {
+        if (!active) return;
         setLoadError(true);
         setLoading(false);
-      },
-    );
+      });
+
+    return () => { active = false; };
   }, []);
 
   return (
@@ -42,8 +38,6 @@ export function ReviewSection() {
         <h2>작은 결과라도 구체적으로 보여드립니다.</h2>
         <p>실제 프로젝트를 진행한 수강생이 직접 남긴 경험입니다.</p>
       </div>
-
-      {submitted && <div className="review-success-banner"><CheckCircle2 size={20} /><span><strong>후기가 등록되었습니다.</strong> 소중한 경험을 들려주셔서 감사합니다.</span></div>}
 
       {loading ? (
         <div className="review-empty">후기를 불러오고 있습니다.</div>
