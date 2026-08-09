@@ -274,30 +274,117 @@
   line-height: 1.75;
 }
 
-.published-review-details {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+.published-review-card blockquote span {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 
-.published-review-details > div {
-  padding-top: 18px;
+.review-detail-button {
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+
+.review-detail-button:hover {
+  border-color: var(--primary);
+  background: var(--accent);
+  color: var(--primary);
+}
+
+.review-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(9, 18, 36, .62);
+  backdrop-filter: blur(5px);
+}
+
+.review-detail-modal {
+  position: relative;
+  width: min(760px, 100%);
+  max-height: min(860px, 90vh);
+  overflow-y: auto;
+  padding: 38px;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 28px 90px rgba(8, 20, 48, .28);
+}
+
+.review-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.review-detail-modal > header {
+  padding-right: 48px;
+}
+
+.review-detail-modal > header h2 {
+  margin: 16px 0 0;
+  color: var(--ink);
+  font-size: clamp(24px, 4vw, 34px);
+}
+
+.review-modal-answers {
+  margin-top: 30px;
+}
+
+.review-modal-answers article {
+  padding: 26px 0;
   border-top: 1px solid var(--line);
 }
 
-.published-review-details span {
-  display: block;
-  margin-bottom: 7px;
+.review-modal-answers article > span {
+  display: inline-grid;
+  min-width: 36px;
+  height: 24px;
+  place-items: center;
+  border-radius: 99px;
+  background: var(--accent);
   color: var(--primary);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
 }
 
-.published-review-details p {
+.review-modal-answers h3 {
+  margin: 12px 0 10px;
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.review-modal-answers p {
   margin: 0;
   color: var(--muted);
   font-size: 14px;
-  line-height: 1.75;
+  line-height: 1.85;
   white-space: pre-wrap;
 }
 
@@ -339,4 +426,11 @@
   .review-question { padding: 28px 0; }
   .review-question strong { font-size: 17px; }
   .published-review-card { padding: 24px; }
+  .review-modal-backdrop { padding: 12px; }
+  .review-detail-modal {
+    max-height: 92vh;
+    padding: 30px 22px;
+    border-radius: 18px;
+  }
+  .review-modal-close { top: 12px; right: 12px; }
 }

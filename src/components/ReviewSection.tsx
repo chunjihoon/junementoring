@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { MessageSquareQuote } from 'lucide-react';
+import { ArrowRight, MessageSquareQuote, X } from 'lucide-react';
 import { getPublishedReviews } from '../lib/firebase';
 import type { PublishedReview, ReviewCourse } from '../types';
 
@@ -14,6 +14,8 @@ export function ReviewSection() {
   const [reviews, setReviews] = useState<PublishedReview[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
+  const [selectedReview, setSelectedReview] = useState<PublishedReview | null>(null);
+
   useEffect(() => {
     let active = true;
     getPublishedReviews()
@@ -30,6 +32,21 @@ export function ReviewSection() {
 
     return () => { active = false; };
   }, []);
+
+  useEffect(() => {
+    if (!selectedReview) return;
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setSelectedReview(null);
+    };
+    document.addEventListener('keydown', closeOnEscape);
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', closeOnEscape);
+      document.body.style.overflow = '';
+    };
+  }, [selectedReview]);
 
   return (
     <section className="section muted-section review-showcase" id="reviews">
@@ -53,14 +70,48 @@ export function ReviewSection() {
                 <span className="review-course">{courseLabels[review.course] ?? courseLabels.other}</span>
                 <strong>{review.displayName}</strong>
               </header>
-              <blockquote>“{review.helpful}”</blockquote>
-              <div className="published-review-details">
-                <div><span>수업 전</span><p>{review.before}</p></div>
-                <div><span>달라진 점</span><p>{review.change}</p></div>
-                <div><span>추천 대상</span><p>{review.recommend}</p></div>
-              </div>
+              <blockquote><span>“{review.helpful}”</span></blockquote>
+              <button className="review-detail-button" type="button" onClick={() => setSelectedReview(review)}>
+                리뷰 자세히 보기 <ArrowRight size={17} />
+              </button>
             </article>
           ))}
+        </div>
+      )}
+
+      {selectedReview && (
+        <div className="review-modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && setSelectedReview(null)}>
+          <div className="review-detail-modal" role="dialog" aria-modal="true" aria-labelledby="review-modal-title">
+            <button className="review-modal-close" type="button" onClick={() => setSelectedReview(null)} aria-label="리뷰 상세 닫기">
+              <X size={22} />
+            </button>
+            <header>
+              <span className="review-course">{courseLabels[selectedReview.course] ?? courseLabels.other}</span>
+              <h2 id="review-modal-title">{selectedReview.displayName}님의 수강 후기</h2>
+            </header>
+            <div className="review-modal-answers">
+              <article>
+                <span>01</span>
+                <h3>수업을 시작하기 전, 어떤 부분이 어렵거나 막막했나요?</h3>
+                <p>{selectedReview.before}</p>
+              </article>
+              <article>
+                <span>02</span>
+                <h3>수업하면서 특히 도움이 됐던 부분이나 좋았던 점은 무엇인가요?</h3>
+                <p>{selectedReview.helpful}</p>
+              </article>
+              <article>
+                <span>03</span>
+                <h3>수업 전과 비교해서 지금 달라진 점이나 직접 할 수 있게 된 것은 무엇인가요?</h3>
+                <p>{selectedReview.change}</p>
+              </article>
+              <article>
+                <span>04</span>
+                <h3>어떤 분들에게 이 수업을 추천하고 싶나요?</h3>
+                <p>{selectedReview.recommend}</p>
+              </article>
+            </div>
+          </div>
         </div>
       )}
     </section>
