@@ -3,12 +3,12 @@ import { collection, doc, getDocsFromServer, getFirestore, query, serverTimestam
 import type { ConsultationPayload, PublishedReview, ReviewPayload } from '../types';
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'AIzaSyBXo_4_eYS5Y1jOrA_Mvty7r7mmFdGhv8A',
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'codingwithjune-d9f4f.firebaseapp.com',
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'codingwithjune-d9f4f',
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'codingwithjune-d9f4f.firebasestorage.app',
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '606274167793',
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || '1:606274167793:web:721906ffa39553de1dda50',
 };
 
 const isConfigured = Boolean(firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.appId);
