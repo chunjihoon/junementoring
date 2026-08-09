@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, Bot, Check, ChevronDown, Code2, Globe2, Menu, MessageCircle, Rocket, ShieldCheck, Smartphone, Sparkles, X } from 'lucide-react';
+import { ArrowRight, Bot, Check, ChevronDown, Code2, ExternalLink, Globe2, Menu, MessageCircle, Rocket, ShieldCheck, Smartphone, Sparkles, X } from 'lucide-react';
 import { ConsultationModal } from './components/ConsultationModal';
 import { ReviewSection } from './components/ReviewSection';
 import { faqs, pains, profile, programs } from './data/content';
@@ -92,6 +92,20 @@ function App() {
         <section className="section instructor-section" id="instructor">
           <div className="profile-photo"><img src="/profile.jpeg" alt={`${profile.name} 프로필 사진`} width="161" height="200" loading="lazy" decoding="async" /></div>
           <div><span className="eyebrow">강사 소개</span><h2>강의 경력의 숫자보다, 실제 개발 문제를 해결해 온 경험으로 지도합니다.</h2><p>서버, 웹, iOS 분야에서 약 5년간 개발자로 근무하며 실제 사용자가 이용하는 상용 서비스를 개발했습니다. 단순히 코드를 따라 작성하는 수업보다 수강생이 자신의 프로젝트를 직접 설계하고 오류를 해결하며 결과물을 완성하는 과정을 중요하게 생각합니다.</p><p>AI를 적극적으로 활용하되, 생성된 코드가 왜 작동하는지 이해하고 이후에도 직접 수정할 수 있도록 구조와 원리를 함께 설명합니다.</p><div className="stats"><span><strong>약 5년</strong>전체 개발 경력</span><span><strong>웹·서버·iOS</strong>실무 개발 영역</span><span><strong>8회 → 10회</strong>최근 수강생 연장 사례</span></div></div>
+        </section>
+
+        <section className="section muted-section" id="portfolio">
+          <div className="section-heading"><span className="eyebrow">포트폴리오</span><h2>직접 기획하고 구현한 웹서비스입니다.</h2><p>아이디어를 실제 사용자가 이용할 수 있는 서비스로 설계하고 개발했습니다.</p></div>
+          <div className="portfolio-grid">
+            <a className="portfolio-card" href="https://loopeak.app" target="_blank" rel="noreferrer" aria-label="Loopeak 사이트 새 창에서 보기">
+              <div className="portfolio-thumbnail"><img src="/portfolio/loopeak.png" alt="Loopeak 웹서비스 화면" width="1440" height="900" loading="lazy" decoding="async" /></div>
+              <div className="portfolio-content"><div><span>언어 학습 웹서비스</span><h3>Loopeak</h3><p>문장을 보고, 듣고, 말하는 반복 학습을 통해 회화 표현을 익히는 서비스입니다.</p></div><ExternalLink size={21} aria-hidden="true" /></div>
+            </a>
+            <a className="portfolio-card" href="https://cheermeuplife.com" target="_blank" rel="noreferrer" aria-label="취미로운응원생활 사이트 새 창에서 보기">
+              <div className="portfolio-thumbnail"><img src="/portfolio/cheermeuplife.png" alt="취미로운응원생활 웹사이트 화면" width="1440" height="900" loading="lazy" decoding="async" /></div>
+              <div className="portfolio-content"><div><span>치어리딩 클래스 웹사이트</span><h3>취미로운응원생활</h3><p>치어리딩 레슨과 공연, 온라인 클래스를 소개하고 예약으로 연결하는 서비스입니다.</p></div><ExternalLink size={21} aria-hidden="true" /></div>
+            </a>
+          </div>
         </section>
 
         <ReviewSection />
