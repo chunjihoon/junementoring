@@ -1,5 +1,5 @@
 export const profile = {
-  brand: 'AI 웹·앱 제작 June 멘토링',
+  brand: 'AI 코딩 June 멘토링',
   name: 'June',
   headline: 'AI로 코드는 만들었지만, 서비스로 완성하지 못하셨나요?',
   subheadline:
@@ -22,7 +22,7 @@ export const programs = [
   {
     id: 'diagnosis',
     eyebrow: '시작 전 진단',
-    title: 'AI 서비스 아이디어·프로젝트 진단',
+    title: '서비스 아이디어·프로젝트 진단',
     duration: '60분',
     price: '29,000원',
     description: '웹·앱 방향, MVP 범위와 기술 구조를 정리하고 실행 순서를 제안합니다.',
@@ -32,7 +32,7 @@ export const programs = [
   {
     id: 'web',
     eyebrow: '웹 MVP',
-    title: 'AI 활용 웹서비스 MVP 완성',
+    title: 'AI 코딩 웹서비스 과정',
     duration: '기본 4회 · 1회 60분',
     price: '116,000원부터',
     description: 'React와 Firebase를 활용해 핵심 기능이 작동하고 URL로 공유 가능한 웹서비스를 완성합니다.',
@@ -42,7 +42,7 @@ export const programs = [
   {
     id: 'ios',
     eyebrow: 'iPhone 앱 MVP',
-    title: 'AI 활용 iPhone 앱 MVP 완성',
+    title: 'AI 코딩 아이폰 앱 과정',
     duration: '기본 4회 · 1회 60분',
     price: '116,000원부터',
     description: 'SwiftUI 기반 앱을 실제 기기에서 작동하게 만들고 App Store 최초 제출과 보완 과정을 지원합니다.',

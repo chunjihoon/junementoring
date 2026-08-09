@@ -129,7 +129,7 @@ export function ReviewPage() {
       <main className="review-main">
         <aside className="review-intro">
           <span className="eyebrow"><MessageSquareQuote size={15} /> 수강 후기</span>
-          <h1>함께한 경험을<br />들려주세요.</h1>
+          <h1>June과 <br />함께한 경험을<br />들려주세요.</h1>
           <p>남겨주신 이야기는 같은 고민을 가진 분이 자신의 프로젝트를 시작하는 데 큰 도움이 됩니다.</p>
           <div className="review-trust">
             <span><Check size={16} /> 정해진 답 없이 편하게 작성해주세요.</span>
