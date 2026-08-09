@@ -41,15 +41,8 @@ service cloud.firestore {
 
     match /reviews/{document} {
       allow read: if resource.data.published == true;
-      allow create: if request.resource.data.keys().hasOnly([
-                      'submissionId', 'displayName', 'course', 'before', 'helpful',
-                      'change', 'recommend', 'published',
-                      'createdAt', 'source'
-                    ])
-                    && request.resource.data.submissionId == document
+      allow create: if request.resource.data.submissionId == document
                     && request.resource.data.submissionId is string
-                    && request.resource.data.submissionId.size() >= 20
-                    && request.resource.data.submissionId.size() <= 80
                     && request.resource.data.displayName is string
                     && request.resource.data.displayName.size() > 0
                     && request.resource.data.displayName.size() <= 80
@@ -66,9 +59,7 @@ service cloud.firestore {
                     && request.resource.data.recommend is string
                     && request.resource.data.recommend.size() > 0
                     && request.resource.data.recommend.size() <= 3000
-                    && request.resource.data.published == true
-                    && request.resource.data.createdAt == request.time
-                    && request.resource.data.source == 'review-page';
+                    && request.resource.data.published == true;
       allow update, delete: if false;
     }
   }

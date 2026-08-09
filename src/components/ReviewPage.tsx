@@ -74,6 +74,8 @@ export function ReviewPage() {
     setError('');
 
     try {
+      await saveReview(form);
+
       const courseLabels: Record<ReviewPayload['course'], string> = {
         diagnosis: '프로젝트 진단',
         web: '웹서비스 과정',
@@ -89,13 +91,13 @@ export function ReviewPage() {
         '4. 추천하고 싶은 분': form.recommend,
         '접수 번호': form.submissionId,
       });
-      await saveReview(form);
       setStatus('success');
       window.setTimeout(() => window.location.assign('/#reviews'), 1800);
     } catch (caught) {
       submittingRef.current = false;
       setStatus('error');
-      setError(caught instanceof Error ? caught.message : '리뷰를 등록하지 못했습니다. 잠시 후 다시 시도해주세요.');
+      console.error('Review submission failed', caught);
+      setError('후기를 등록하지 못했습니다. 잠시 후 다시 시도해주세요.');
     }
   }
 
