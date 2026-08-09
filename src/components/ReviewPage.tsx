@@ -144,7 +144,7 @@ export function ReviewPage() {
           <div className="review-basic-fields">
             <label>
               이름
-              <input required maxLength={80} value={form.displayName} onChange={(event) => update('displayName', event.target.value)} placeholder="예: 김OO, 주니, 익명" />
+              <input required maxLength={80} value={form.displayName} onChange={(event) => update('displayName', event.target.value)} placeholder="" />
             </label>
             <label>
               수강 과정
