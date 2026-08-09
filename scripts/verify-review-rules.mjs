@@ -66,5 +66,21 @@ await expectDenied('필수 답변 누락 리뷰', () => setDoc(doc(db, 'reviews'
   published: true,
 }));
 
-console.log('PASS: 정상 리뷰 생성·조회 성공, 비공개 및 필수 답변 누락 요청 거부 성공');
+const consultationId = 'consultation-emulator-test-00000001';
+await setDoc(doc(db, 'consultations', consultationId), {
+  submissionId: consultationId,
+  type: 'paid',
+  name: '상담 규칙 테스트',
+  email: 'test@example.com',
+  contact: 'test-contact',
+  direction: 'web',
+  experience: '개발 경험',
+  idea: '서비스 아이디어',
+  blocker: '현재 어려움',
+  availability: '평일 저녁',
+  createdAt: serverTimestamp(),
+  source: 'landing-page',
+});
+
+console.log('PASS: 리뷰 생성·조회와 결제방식 없는 상담 신청 저장 성공, 잘못된 리뷰 거부 성공');
 await terminate(db);

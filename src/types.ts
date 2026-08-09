@@ -11,7 +11,6 @@ export interface ConsultationPayload {
   idea: string;
   blocker: string;
   availability: string;
-  payment?: 'kmong' | 'bank' | '';
   website?: string;
 }
 

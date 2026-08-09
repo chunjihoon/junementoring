@@ -5,7 +5,7 @@ service cloud.firestore {
       allow create: if request.resource.data.keys().hasOnly([
                       'submissionId', 'type', 'name', 'email', 'contact',
                       'direction', 'experience', 'idea', 'blocker',
-                      'availability', 'payment', 'createdAt', 'source'
+                      'availability', 'createdAt', 'source'
                     ])
                     && request.resource.data.submissionId == document
                     && request.resource.data.submissionId is string
@@ -20,7 +20,6 @@ service cloud.firestore {
                     && request.resource.data.idea is string
                     && request.resource.data.blocker is string
                     && request.resource.data.availability is string
-                    && request.resource.data.payment in ['', 'kmong', 'bank']
                     && request.resource.data.name.size() > 0
                     && request.resource.data.name.size() <= 100
                     && request.resource.data.email.size() > 0

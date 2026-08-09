@@ -14,7 +14,7 @@ interface Props {
 const initialForm = (type: ConsultationType): ConsultationPayload => ({
   submissionId: createSubmissionId(),
   type,
-  name: '', email: '', contact: '', direction: 'unsure', experience: '', idea: '', blocker: '', availability: '', payment: '', website: '',
+  name: '', email: '', contact: '', direction: 'unsure', experience: '', idea: '', blocker: '', availability: '', website: '',
 });
 
 export function ConsultationModal({ open, defaultType, onClose }: Props) {
@@ -52,7 +52,6 @@ export function ConsultationModal({ open, defaultType, onClose }: Props) {
         '만들고 싶은 서비스': form.idea,
         '현재 막힌 부분': form.blocker,
         '상담 가능 시간': form.availability,
-        '결제 방식': form.payment || '미선택',
         '접수 번호': form.submissionId,
       });
       await saveConsultation(form);
@@ -91,7 +90,6 @@ export function ConsultationModal({ open, defaultType, onClose }: Props) {
               <label>만들고 싶은 서비스<textarea required rows={3} value={form.idea} onChange={(e) => update('idea', e.target.value)} /></label>
               <label>현재 가장 막힌 부분<textarea rows={2} value={form.blocker} onChange={(e) => update('blocker', e.target.value)} /></label>
               <label>상담 가능한 날짜와 시간대<textarea required rows={2} value={form.availability} onChange={(e) => update('availability', e.target.value)} placeholder="예: 평일 저녁 7시 이후, 토요일 오전" /></label>
-              {form.type === 'paid' && <label>희망 결제 방식<select value={form.payment} onChange={(e) => update('payment', e.target.value)}><option value="">선택해주세요</option><option value="kmong">크몽</option><option value="bank">계좌이체</option></select></label>}
               {status === 'error' && <p className="form-error">{error}</p>}
               <button className="button primary wide" disabled={status === 'loading'}>{status === 'loading' ? <><Loader2 className="spin" size={18} /> 전송 중</> : '신청 내용 보내기'}</button>
               <p className="form-privacy">제출한 정보는 상담 및 수업 안내 목적으로만 사용됩니다.</p>

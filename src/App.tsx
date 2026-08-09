@@ -18,6 +18,7 @@ function App() {
           <a href="#programs" onClick={() => setMenuOpen(false)}>과정</a>
           <a href="#process" onClick={() => setMenuOpen(false)}>진행 방식</a>
           <a href="#instructor" onClick={() => setMenuOpen(false)}>강사 소개</a>
+          <a href="#reviews" onClick={() => setMenuOpen(false)}>수강후기</a>
           <a href="#faq" onClick={() => setMenuOpen(false)}>FAQ</a>
           <button className="button compact" onClick={() => openModal('free')}>무료 상담</button>
         </nav>
