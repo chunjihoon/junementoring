@@ -57,7 +57,6 @@ export async function getPublishedReviews(): Promise<PublishedReview[]> {
       helpful: data.helpful,
       change: data.change,
       recommend: data.recommend,
-      consentToPublish: data.consentToPublish,
       published: true as const,
       createdAt: data.createdAt?.toDate?.(),
     } satisfies PublishedReview;

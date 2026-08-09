@@ -25,7 +25,6 @@ export interface ReviewPayload {
   helpful: string;
   change: string;
   recommend: string;
-  consentToPublish: boolean;
   website?: string;
 }
 

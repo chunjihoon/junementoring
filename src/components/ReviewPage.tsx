@@ -14,7 +14,6 @@ const createInitialForm = (): ReviewPayload => ({
   helpful: '',
   change: '',
   recommend: '',
-  consentToPublish: false,
   website: '',
 });
 

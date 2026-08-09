@@ -43,7 +43,7 @@ service cloud.firestore {
       allow read: if resource.data.published == true;
       allow create: if request.resource.data.keys().hasOnly([
                       'submissionId', 'displayName', 'course', 'before', 'helpful',
-                      'change', 'recommend', 'consentToPublish', 'published',
+                      'change', 'recommend', 'published',
                       'createdAt', 'source'
                     ])
                     && request.resource.data.submissionId == document
@@ -66,7 +66,6 @@ service cloud.firestore {
                     && request.resource.data.recommend is string
                     && request.resource.data.recommend.size() > 0
                     && request.resource.data.recommend.size() <= 3000
-                    && request.resource.data.consentToPublish == true
                     && request.resource.data.published == true
                     && request.resource.data.createdAt == request.time
                     && request.resource.data.source == 'review-page';
