@@ -148,8 +148,8 @@ export function ReviewPage() {
             <label>
               수강 과정
               <select value={form.course} onChange={(event) => update('course', event.target.value as ReviewPayload['course'])}>
-                <option value="web">웹서비스 MVP</option>
-                <option value="ios">iPhone 앱 MVP</option>
+                <option value="web">웹서비스 과정</option>
+                <option value="ios">iPhone 앱 과정</option>
                 <option value="diagnosis">프로젝트 진단</option>
                 <option value="other">기타 과정</option>
               </select>
